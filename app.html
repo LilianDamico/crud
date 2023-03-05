@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>CRUD em JavaScript</title>
+</head>
+
+<body>
+    <h1>CRUD em JavaScript</h1>
+
+    <form id="crud-form">
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name">
+        <br>
+        <label for="age">Idade:</label>
+        <input type="number" id="age" name="age">
+        <br>
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email">
+        <br>
+        <button type="submit" id="submit-btn">Adicionar</button>
+    </form>
+
+    <table id="data-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Idade</th>
+                <th>E-mail</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody id="data-body">
+        </tbody>
+    </table>
+
+    <script>
+        let data = [];
+
+        const form = document.getElementById('crud-form');
+        const nameInput = document.getElementById('name');
+        const ageInput = document.getElementById('age');
+        const emailInput = document.getElementById('email');
+        const submitBtn = document.getElementById('submit-btn');
+        const dataBody = document.getElementById('data-body');
+
+        // Função para adicionar um novo registro aos dados
+        function addData(name, age, email) {
+            const newData = { name, age, email };
+            data.push(newData);
+        }
+
+        // Função para atualizar um registro existente
+        function updateData(index, name, age, email) {
+            data[index].name = name;
+            data[index].age = age;
+            data[index].email = email;
+        }
+
+        // Função para excluir um registro
+        function deleteData(index) {
+            data.splice(index, 1);
+        }
+
+        // Função para exibir os dados na tabela
+        function renderData() {
+            dataBody.innerHTML = '';
+
+            for (let i = 0; i < data.length; i++) {
+                const row = document.createElement('tr');
+
+                const nameCell = document.createElement('td');
+                nameCell.innerText = data[i].name;
+                row.appendChild(nameCell);
+
+                const ageCell = document.createElement('td');
+                ageCell.innerText = data[i].age;
+                row.appendChild(ageCell);
+
+                const emailCell = document.createElement('td');
+                emailCell.innerText = data[i].email;
+                row.appendChild(emailCell);
+
+                const actionsCell = document.createElement('td');
+                const editBtn = document.createElement('button');
+                editBtn.innerText = 'Editar';
+                editBtn.addEventListener('click', () => {
+                    nameInput.value = data[i].name;
+                    ageInput.value = data[i].age;
+                    emailInput.value = data[i].email;
+                    submitBtn.innerText = 'Atualizar';
+                    submitBtn.dataset.mode = 'update';
+                    submitBtn.dataset.index = i;
+                });
+                actionsCell.appendChild(editBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerText = 'Excluir';
+                deleteBtn.addEventListener('click', () => {
+                    deleteData(i);
+                    renderData();
+                });
+                actionsCell.appendChild(deleteBtn);
+
+                row.appendChild(actionsCell);
+
+                dataBody.appendChild(row);
+            }
+        }
+
+      // Event listener para adicionar ou atualizar
